@@ -1,0 +1,31 @@
+import java.io.*;
+import org.codehaus.plexus.util.FileUtils;
+import java.util.regex.*;
+
+try
+{
+    File file = new File( basedir, "build.log" );
+    String buf = FileUtils.fileRead( file );
+    Pattern p = Pattern.compile( "\\QThe following plugin updates are available\\E" );
+    Matcher m = p.matcher( buf.toString() );
+    if ( !m.find() )
+    {
+        System.out.println( "cannot find The following plugin updates are available" ); 
+        return false;
+    }
+
+    p = Pattern.compile( "\\Qmaven-deploy-plugin ...................................... 2.3 ->\\E" );
+    m = p.matcher( buf.toString() );
+    if ( !m.find() )
+    {
+        System.out.println( "cannot update of deploy plugin");
+        return false;
+    }   
+}
+catch( Throwable t )
+{
+    t.printStackTrace();
+    return false;
+}
+
+return true;
