@@ -39,35 +39,9 @@ public class IncrementMojo
     extends AbstractVersionsSetMojo
 {
 
-    /**
-     * Called when this mojo is executed.
-     *
-     * @throws org.apache.maven.plugin.MojoExecutionException
-     *          when things go wrong.
-     * @throws org.apache.maven.plugin.MojoFailureException
-     *          when things go wrong.
-     */
-    public void execute()
-        throws MojoExecutionException, MojoFailureException
-    {
-        if ( getProject().getOriginalModel().getVersion() == null )
-        {
-            throw new MojoExecutionException( "Project version is inherited from parent." );
-        }
-        
-        // The new version number to set.
-        String newVersion;
-        try
-    	{
-			newVersion = incrementVersion( oldVersion );
-		}
-        catch ( VersionParseException e )
-		{
-			throw new MojoExecutionException( e.getMessage(), e );
-		}
-
-        // make the change
-        setVersion( newVersion );
+    @Override
+    protected String getNewVersion() throws MojoExecutionException, VersionParseException {
+        return incrementVersion( oldVersion );
     }
 
     /**

@@ -54,23 +54,9 @@ public class SetMojo
      */
     private Prompter prompter;
 
-    /**
-     * Called when this mojo is executed.
-     *
-     * @throws org.apache.maven.plugin.MojoExecutionException
-     *          when things go wrong.
-     * @throws org.apache.maven.plugin.MojoFailureException
-     *          when things go wrong.
-     */
-    public void execute()
-        throws MojoExecutionException, MojoFailureException
-    {
 
-        if ( getProject().getOriginalModel().getVersion() == null )
-        {
-            throw new MojoExecutionException( "Project version is inherited from parent." );
-        }
-
+    @Override
+    protected String getNewVersion() throws MojoExecutionException {
         if ( StringUtils.isEmpty( newVersion ) )
         {
             if ( settings.isInteractiveMode() )
@@ -78,7 +64,7 @@ public class SetMojo
                 try
                 {
                     newVersion =
-                        prompter.prompt( "Enter the new version to set", getProject().getOriginalModel().getVersion() );
+                            prompter.prompt( "Enter the new version to set", getProject().getOriginalModel().getVersion() );
                 }
                 catch ( PrompterException e )
                 {
@@ -88,16 +74,11 @@ public class SetMojo
             else
             {
                 throw new MojoExecutionException( "You must specify the new version, either by using the newVersion "
-                                                      + "property (that is -DnewVersion=... on the command line) or run in interactive mode" );
+                        + "property (that is -DnewVersion=... on the command line) or run in interactive mode" );
             }
         }
-        if ( StringUtils.isEmpty( newVersion ) )
-        {
-            throw new MojoExecutionException( "You must specify the new version, either by using the newVersion "
-                                                  + "property (that is -DnewVersion=... on the command line) or run in interactive mode" );
-        }
 
-        setVersion(newVersion);
+        return newVersion;
     }
 
 }

@@ -27,6 +27,7 @@ import org.apache.maven.model.Parent;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.release.versions.VersionParseException;
 import org.codehaus.mojo.versions.api.PomHelper;
 import org.codehaus.mojo.versions.change.VersionChange;
 import org.codehaus.mojo.versions.change.VersionChanger;
@@ -121,6 +122,44 @@ public abstract class AbstractVersionsSetMojo extends AbstractVersionsUpdaterMoj
             sourceChanges.add( new VersionChange( groupId, artifactId, oldVersion, newVersion ) );
         }
     }
+
+    /**
+     * Called when this mojo is executed.
+     *
+     * @throws org.apache.maven.plugin.MojoExecutionException
+     *          when things go wrong.
+     * @throws org.apache.maven.plugin.MojoFailureException
+     *          when things go wrong.
+     */
+    public void execute()
+            throws MojoExecutionException, MojoFailureException
+    {
+
+        if ( getProject().getOriginalModel().getVersion() == null )
+        {
+            throw new MojoExecutionException( "Project version is inherited from parent." );
+        }
+
+        // obtain new version to set
+        String newVersion = null;
+        try {
+            newVersion = getNewVersion();
+        } catch (VersionParseException e) {
+            throw new MojoExecutionException( e.getMessage(), e );
+        }
+
+        // validate it
+        if ( StringUtils.isEmpty( newVersion ) )
+        {
+            throw new MojoExecutionException( "You must specify the new version, either by using the newVersion "
+                    + "property (that is -DnewVersion=... on the command line) or run in interactive mode" );
+        }
+
+        // set it
+        setVersion(newVersion);
+    }
+
+    protected abstract String getNewVersion() throws MojoExecutionException, VersionParseException;
 
     protected void setVersion(String newVersion) throws MojoFailureException, MojoExecutionException {
         if (updateMatchingVersions == null) {
