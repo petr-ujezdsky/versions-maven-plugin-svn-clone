@@ -41,7 +41,7 @@ public class IncrementMojo
 
     @Override
     protected String getNewVersion() throws MojoExecutionException, VersionParseException {
-        return incrementVersion( oldVersion );
+		return incrementVersion(getOldVersion());
     }
 
     /**

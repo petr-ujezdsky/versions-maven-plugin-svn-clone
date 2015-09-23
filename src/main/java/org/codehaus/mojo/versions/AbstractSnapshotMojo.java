@@ -40,7 +40,7 @@ public abstract class AbstractSnapshotMojo extends AbstractVersionsSetMojo {
 
     @Override
     protected String getNewVersion() throws MojoExecutionException, VersionParseException {
-        VersionInfo versionInfo = new DefaultVersionInfo(oldVersion);
+        VersionInfo versionInfo = new DefaultVersionInfo(getOldVersion());
 
         if (!addSnapshot && versionInfo.isSnapshot())
         {
@@ -51,8 +51,8 @@ public abstract class AbstractSnapshotMojo extends AbstractVersionsSetMojo {
             return versionInfo.getSnapshotVersionString();
         } else {
             String message = addSnapshot ?
-                    "Trying to add -SNAPSHOT to version that already contains it (" + oldVersion + ")"
-                    :"Trying to remove -SNAPSHOT from version that does not contain it (" + oldVersion + ")";
+                    "Trying to add -SNAPSHOT to version that already contains it (" + getOldVersion() + ")"
+                    :"Trying to remove -SNAPSHOT from version that does not contain it (" + getOldVersion() + ")";
             throw new MojoExecutionException(message);
         }
     }

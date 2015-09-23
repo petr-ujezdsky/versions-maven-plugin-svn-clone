@@ -63,14 +63,6 @@ public abstract class AbstractVersionsSetMojo extends AbstractVersionsUpdaterMoj
     private String artifactId;
 
     /**
-     * The version of the dependency/module to update.
-     *
-     * @parameter expression="${oldVersion}" default-value="${project.version}"
-     * @since 1.2
-     */
-    protected String oldVersion;
-
-    /**
      * Whether matching versions explicitly specified (as /project/version) in child modules should be updated.
      *
      * @parameter expression="${updateMatchingVersions}" default-value="true"
@@ -162,11 +154,14 @@ public abstract class AbstractVersionsSetMojo extends AbstractVersionsUpdaterMoj
     protected abstract String getNewVersion() throws MojoExecutionException, VersionParseException;
 
     protected void setVersion(String newVersion) throws MojoFailureException, MojoExecutionException {
+        // store newVersion for another possible goal
+        VersionStore.setVersion(newVersion);
+
         if (updateMatchingVersions == null) {
             updateMatchingVersions = Boolean.TRUE;
         }
         // this is the triggering change
-        addChange( groupId, artifactId, oldVersion, newVersion );
+        addChange( groupId, artifactId, getOldVersion(), newVersion );
 
         try
         {
@@ -343,5 +338,19 @@ public abstract class AbstractVersionsSetMojo extends AbstractVersionsUpdaterMoj
             throw new MojoExecutionException( e.getMessage(), e );
         }
         log.clearContext();
+    }
+
+    /**
+     * The version of the dependency/module to update.
+     *
+     * @parameter expression="${oldVersion}" default-value="${project.version}"
+     * @since 1.2
+     */
+    public void setOldVersion(String oldVersion) {
+        VersionStore.setVersionIfEmpty(oldVersion);
+    }
+
+    public String getOldVersion() {
+        return VersionStore.getVersion();
     }
 }
