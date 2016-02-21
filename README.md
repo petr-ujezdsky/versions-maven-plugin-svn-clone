@@ -1,3 +1,8 @@
+# IMPORTANT
+All changes have been moved to my fork [versions-maven-plugin](https://github.com/petr-ujezdsky/versions-maven-plugin)
+of official github project. Some bugs are also fixed there and I will not probably backport them here. I have also
+created pull request to move these changes into official version.
+
 # versions-maven-plugin
 Modified [versions-maven-plugin](http://mojo.codehaus.org/versions-maven-plugin/) to support incrementing
 project version and adding / removing SNAPSHOT suffix.
